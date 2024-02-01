@@ -3,6 +3,10 @@ mod feed;
 mod summary;
 
 use serde_derive::Deserialize;
+use std::sync::Arc;
+use std::thread::JoinHandle;
+use tokio::sync::Semaphore;
+use tokio::task;
 
 #[derive(Deserialize, Debug)]
 struct FeedDetails {
@@ -25,28 +29,50 @@ fn read_config() -> std::io::Result<Vec<FeedDetails>> {
     Ok(urls)
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let urls = read_config()?;
-    for url in urls {
-        let response = match url.kind.as_str() {
-            "atom" => {
-                let feed = atom::Atom::new(url.url.to_string());
-                let data = feed.parse_feed().await?;
-                Some(data.as_markdown(200))
-            }
-
-            "feed" => {
-                let feed = feed::Feed::new(url.url.to_string());
-                let data = feed.parse_feed().await?;
-                Some(data.as_markdown(200))
-            }
-            _ => None,
-        };
-        if response.is_some() {
-            println!("{}", response.unwrap().unwrap());
+async fn process_url(url: &FeedDetails) -> Option<String> {
+    println!("Processing url");
+    let response = match url.kind.as_str() {
+        "atom" => {
+            let feed = atom::Atom::new(url.url.to_string());
+            let data = feed.parse_feed().await.ok()?;
+            Some(data.as_markdown(200))
         }
+
+        "feed" => {
+            let feed = feed::Feed::new(url.url.to_string());
+            let data = feed.parse_feed().await.ok()?;
+            Some(data.as_markdown(200))
+        }
+
+        _ => None,
+    };
+    response.unwrap()
+}
+
+async fn reader() -> Result<(), Box<dyn std::error::Error>> {
+    let urls = read_config()?;
+    let sem = Arc::new(Semaphore::new(10));
+    let mut res = Vec::new();
+
+    for url in urls {
+        let permit = Arc::clone(&sem).acquire_owned().await;
+        let handle = task::spawn(async move {
+            let _permit = permit;
+            if let Some(response) = process_url(&url).await {
+                println!("{}", response);
+            }
+        });
+        res.push(handle);
+    }
+
+    for result in res {
+        result.await.unwrap();
     }
 
     Ok(())
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    reader().await
 }
