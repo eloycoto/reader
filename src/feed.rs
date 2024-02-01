@@ -1,7 +1,8 @@
-use chrono::{DateTime, Duration, Utc};
+use chrono::DateTime;
 use rss::Channel;
-use rss::Item;
 use std::fmt;
+
+use crate::summary;
 
 #[derive(Debug)]
 pub enum FeedError {
@@ -28,7 +29,7 @@ impl Feed {
         Feed { url }
     }
 
-    pub async fn parse_feed(&self) -> Result<Channel, FeedError> {
+    pub async fn parse_feed(&self) -> Result<summary::Summary, FeedError> {
         let response = reqwest::get(self.url.clone())
             .await
             .map_err(|_| FeedError::ConnectionError)?;
@@ -38,63 +39,25 @@ impl Feed {
         }
 
         let content = response.bytes().await.map_err(|_| FeedError::ReadError)?;
-        let oo = Channel::read_from(&content[..]);
-        if oo.is_err() {
-            println!("{:?}", oo);
-            oo.map_err(|_| FeedError::RSSParserError)?;
-        }
         let channel = Channel::read_from(&content[..]).map_err(|_| FeedError::RSSParserError)?;
-
-        Ok(channel)
+        Ok(self.export_summary(channel))
     }
-}
 
-#[derive(Debug)]
-pub struct ChannelSummaryInfo<'a> {
-    title: &'a str,
-    link: &'a str,
-    items: Vec<Item>,
-}
-
-impl<'a> ChannelSummaryInfo<'a> {
-    pub fn as_markown(&self, days: i64) -> Option<String> {
-        let since = Utc::now() - Duration::days(days) - Duration::hours(1);
-        let items = self
+    pub fn export_summary(&self, channel: Channel) -> summary::Summary {
+        let items = channel
             .items
             .iter()
-            .filter(|item| match item.pub_date() {
-                Some(date_str) => match DateTime::parse_from_rfc2822(date_str) {
-                    Err(_) => false,
-                    Ok(date) => date > since,
-                },
-                None => false,
+            .map(|e| {
+                let date = DateTime::parse_from_rfc2822(e.pub_date().unwrap())
+                    .unwrap()
+                    .to_utc();
+                summary::Article::new(
+                    e.title().unwrap().to_string(),
+                    e.link().unwrap().to_string(),
+                    date,
+                )
             })
-            .map(|item| format!("\t - [{}]({})", item.title().unwrap(), item.link().unwrap()))
-            .collect::<Vec<String>>();
-
-        if items.is_empty() {
-            return None;
-        }
-
-        return Some(format!(
-            "## {} \n Blog: {} \n Links {}",
-            self.title,
-            self.link,
-            items.join("\n")
-        ));
-    }
-}
-
-pub trait ChannelSummary {
-    fn get_latest_info(&self) -> ChannelSummaryInfo;
-}
-
-impl ChannelSummary for Channel {
-    fn get_latest_info(&self) -> ChannelSummaryInfo {
-        ChannelSummaryInfo {
-            title: self.title(),
-            link: self.link(),
-            items: self.items().to_vec(),
-        }
+            .collect();
+        summary::Summary::new(channel.title(), channel.link(), items)
     }
 }

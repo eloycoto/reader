@@ -8,3 +8,4 @@ reqwest = { version = "0.11.23", features = ["blocking"] }
 rss = "2.0.7"
 chrono = "0.4"
 tokio = { version = "1", features = ["full"] }
+atom_syndication = "0.12"

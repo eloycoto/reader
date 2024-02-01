@@ -750,6 +750,7 @@ dependencies = [
 name = "reader"
 version = "0.1.0"
 dependencies = [
+ "atom_syndication",
  "chrono",
  "reqwest",
  "rss",

@@ -1,17 +1,58 @@
+mod atom;
 mod feed;
-use feed::ChannelSummary;
-use feed::Feed;
+mod summary;
+
+#[derive(Debug)]
+struct FeedDetails<'a> {
+    kind: &'a str,
+    url: &'a str,
+    category: &'a str,
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    //let url = "https://blogs.gnome.org/uraeus/feed/";
-    //let url = "https://go.dev/blog/feed.atom";
+    let urls = vec![
+        FeedDetails {
+            kind: "atom",
+            url: "https://go.dev/blog/feed.atom",
+            category: "golang",
+        },
+        FeedDetails {
+            kind: "atom",
+            url: "https://blog.rust-lang.org/feed.xml",
+            category: "rust",
+        },
+        FeedDetails {
+            kind: "feed",
+            url: "https://blogs.gnome.org/uraeus/feed/",
+            category: "rust",
+        },
+        FeedDetails {
+            kind: "feed",
+            url: "https://words.filippo.io/rss/",
+            category: "golang",
+        },
+    ];
 
-    let url = "https://blog.rust-lang.org/feed.xml";
-    let feed = Feed::new(url.to_string());
-    let fres = feed.parse_feed().await?;
+    for url in urls {
+        let response = match url.kind {
+            "atom" => {
+                let feed = atom::Atom::new(url.url.to_string());
+                let data = feed.parse_feed().await?;
+                Some(data.as_markdown(200))
+            }
 
-    println!("{:?}", fres.get_latest_info().as_markown(200).unwrap());
+            "feed" => {
+                let feed = feed::Feed::new(url.url.to_string());
+                let data = feed.parse_feed().await?;
+                Some(data.as_markdown(200))
+            }
+            _ => None,
+        };
+        if response.is_some() {
+            println!("{}", response.unwrap().unwrap());
+        }
+    }
 
     Ok(())
 }
