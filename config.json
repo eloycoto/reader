@@ -1,0 +1,27 @@
+[
+    {
+            "kind": "atom",
+            "url": "https://go.dev/blog/feed.atom",
+            "category": "golang"
+    },
+
+    {
+            "kind": "atom",
+            "url": "https://blog.rust-lang.org/feed.xml",
+            "category": "rust"
+    },
+
+
+    {
+            "kind": "feed",
+            "url": "https://blogs.gnome.org/uraeus/feed/",
+            "category": "linux"
+    },
+
+    {
+            "kind": "feed",
+            "url": "https://words.filippo.io/rss/",
+            "category": "golang"
+    }
+]
+

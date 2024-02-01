@@ -2,40 +2,34 @@ mod atom;
 mod feed;
 mod summary;
 
-#[derive(Debug)]
-struct FeedDetails<'a> {
-    kind: &'a str,
-    url: &'a str,
-    category: &'a str,
+use serde_derive::Deserialize;
+
+#[derive(Deserialize, Debug)]
+struct FeedDetails {
+    kind: String,
+    url: String,
+    category: String,
+}
+
+use serde_json;
+use std::fs::File;
+use std::io::Read;
+
+fn read_config() -> std::io::Result<Vec<FeedDetails>> {
+    let mut file = File::open("config.json")?;
+    let mut json_data = String::new();
+    file.read_to_string(&mut json_data)?;
+
+    let urls: Vec<FeedDetails> = serde_json::from_str(&json_data)?;
+
+    Ok(urls)
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let urls = vec![
-        FeedDetails {
-            kind: "atom",
-            url: "https://go.dev/blog/feed.atom",
-            category: "golang",
-        },
-        FeedDetails {
-            kind: "atom",
-            url: "https://blog.rust-lang.org/feed.xml",
-            category: "rust",
-        },
-        FeedDetails {
-            kind: "feed",
-            url: "https://blogs.gnome.org/uraeus/feed/",
-            category: "rust",
-        },
-        FeedDetails {
-            kind: "feed",
-            url: "https://words.filippo.io/rss/",
-            category: "golang",
-        },
-    ];
-
+    let urls = read_config()?;
     for url in urls {
-        let response = match url.kind {
+        let response = match url.kind.as_str() {
             "atom" => {
                 let feed = atom::Atom::new(url.url.to_string());
                 let data = feed.parse_feed().await?;
