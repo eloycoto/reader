@@ -84,6 +84,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .required(false),
             ),
         )
+        .subcommand(
+            Command::new("check")
+                .about("check an url")
+                .arg(
+                    arg!(
+                        -u --url <url> "url to check"
+                    )
+                    .id("url")
+                    .required(true),
+                )
+                .arg(
+                    arg!(
+                        -t --type <string> "type to be used 'feed' or 'atom'"
+                    )
+                    .id("type")
+                    .required(true),
+                ),
+        )
         .get_matches();
 
     match matches.subcommand() {
@@ -93,6 +111,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .get_one::<String>("config")
                 .unwrap_or(&default_config);
             return reader(config_path).await;
+        }
+
+        Some(("check", check_matches)) => {
+            let default_type = "atom".to_string();
+            let feed_type = check_matches
+                .get_one::<String>("type")
+                .unwrap_or(&default_type);
+
+            let url = check_matches.get_one::<String>("url");
+            if url.is_none() {
+                return Err("No valid url".into());
+            }
+
+            match feed_type.as_str() {
+                "atom" => {
+                    let feed = atom::Atom::new(url.unwrap().to_string());
+                    let data = feed.parse_feed().await?;
+                    println!("{:?}", data.as_markdown(200).unwrap());
+                    Ok(())
+                }
+                "feed" => {
+                    let feed = feed::Feed::new(url.unwrap().to_string());
+                    let data = feed.parse_feed().await?;
+                    println!("{:?}", data.as_markdown(200).unwrap());
+                    Ok(())
+                }
+                _ => Err("Invalid type".into()),
+            }
         }
         _ => Err("No valid command".into()),
     }
