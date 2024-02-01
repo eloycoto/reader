@@ -47,7 +47,7 @@ impl Summary {
         }
 
         return Some(format!(
-            "\n## {} \nBlog: {} \n\n {}",
+            "\n## {} \nBlog: {} \n\n{}",
             self.title,
             self.link,
             items.join("\n")

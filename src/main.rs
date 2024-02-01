@@ -183,13 +183,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 "atom" => {
                     let feed = atom::Atom::new(url.unwrap().to_string());
                     let data = feed.parse_feed().await?;
-                    println!("{:?}", data.as_markdown(200).unwrap());
+                    println!("{:?}", data.as_markdown(1000).unwrap());
                     Ok(())
                 }
                 "feed" => {
                     let feed = feed::Feed::new(url.unwrap().to_string());
                     let data = feed.parse_feed().await?;
-                    println!("{:?}", data.as_markdown(200).unwrap());
+                    println!("{:?}", data.as_markdown(1000).unwrap());
                     Ok(())
                 }
                 _ => Err("Invalid type".into()),

@@ -52,8 +52,8 @@ impl Feed {
                     .unwrap()
                     .to_utc();
                 summary::Article::new(
-                    e.title().unwrap().to_string(),
-                    e.link().unwrap().to_string(),
+                    e.title().unwrap_or("Invalid").to_string(),
+                    e.link().unwrap_or("Invalid").to_string(),
                     date,
                 )
             })
