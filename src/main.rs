@@ -8,6 +8,7 @@ use serde_json;
 use std::fs::File;
 use std::io::Read;
 use std::sync::Arc;
+use std::sync::Mutex;
 use tokio::sync::Semaphore;
 use tokio::task;
 
@@ -30,36 +31,38 @@ fn read_config(config: &String) -> std::io::Result<Vec<FeedDetails>> {
     Ok(urls)
 }
 
-async fn process_url(url: &FeedDetails) -> Option<String> {
+async fn process_url(url: &FeedDetails) -> Option<(String, String)> {
     let response = match url.kind.as_str() {
         "atom" => {
             let feed = atom::Atom::new(url.url.to_string());
             let data = feed.parse_feed().await.ok()?;
-            Some(data.as_markdown(200))
+            Some((url.category.clone(), data.as_markdown(200).unwrap()))
         }
 
         "feed" => {
             let feed = feed::Feed::new(url.url.to_string());
             let data = feed.parse_feed().await.ok()?;
-            Some(data.as_markdown(200))
+            Some((url.category.clone(), data.as_markdown(200).unwrap()))
         }
 
         _ => None,
     };
-    response.unwrap()
+    response
 }
 
 async fn reader(config: &String) -> Result<(), Box<dyn std::error::Error>> {
     let urls = read_config(config)?;
     let sem = Arc::new(Semaphore::new(10));
     let mut res = Vec::new();
-
+    let feeds = Arc::new(Mutex::new(Vec::new()));
     for url in urls {
         let permit = Arc::clone(&sem).acquire_owned().await;
+        let feeds_clone = Arc::clone(&feeds);
         let handle = task::spawn(async move {
             let _permit = permit;
-            if let Some(response) = process_url(&url).await {
-                println!("{}", response);
+
+            if let Some((cat, response)) = process_url(&url).await {
+                feeds_clone.lock().unwrap().push((cat, response));
             }
         });
         res.push(handle);
@@ -67,6 +70,11 @@ async fn reader(config: &String) -> Result<(), Box<dyn std::error::Error>> {
 
     for result in res {
         result.await.unwrap();
+    }
+
+    feeds.lock().unwrap().sort_by(|a, b| a.0.cmp(&b.0));
+    for feed in feeds.lock().unwrap().iter() {
+        println!("{}", feed.1);
     }
 
     Ok(())
