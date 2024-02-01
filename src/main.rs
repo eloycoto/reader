@@ -2,11 +2,16 @@ mod atom;
 mod feed;
 mod summary;
 
+use clap::{arg, command, Command};
 use serde_derive::Deserialize;
+use serde_json;
+use std::fs::File;
+use std::io::Read;
 use std::sync::Arc;
-use std::thread::JoinHandle;
 use tokio::sync::Semaphore;
 use tokio::task;
+
+static CONFIG_FILE: &str = "config.json";
 
 #[derive(Deserialize, Debug)]
 struct FeedDetails {
@@ -15,12 +20,8 @@ struct FeedDetails {
     category: String,
 }
 
-use serde_json;
-use std::fs::File;
-use std::io::Read;
-
-fn read_config() -> std::io::Result<Vec<FeedDetails>> {
-    let mut file = File::open("config.json")?;
+fn read_config(config: &String) -> std::io::Result<Vec<FeedDetails>> {
+    let mut file = File::open(config)?;
     let mut json_data = String::new();
     file.read_to_string(&mut json_data)?;
 
@@ -30,7 +31,6 @@ fn read_config() -> std::io::Result<Vec<FeedDetails>> {
 }
 
 async fn process_url(url: &FeedDetails) -> Option<String> {
-    println!("Processing url");
     let response = match url.kind.as_str() {
         "atom" => {
             let feed = atom::Atom::new(url.url.to_string());
@@ -49,8 +49,8 @@ async fn process_url(url: &FeedDetails) -> Option<String> {
     response.unwrap()
 }
 
-async fn reader() -> Result<(), Box<dyn std::error::Error>> {
-    let urls = read_config()?;
+async fn reader(config: &String) -> Result<(), Box<dyn std::error::Error>> {
+    let urls = read_config(config)?;
     let sem = Arc::new(Semaphore::new(10));
     let mut res = Vec::new();
 
@@ -74,5 +74,26 @@ async fn reader() -> Result<(), Box<dyn std::error::Error>> {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    reader().await
+    let matches = command!()
+        .subcommand(
+            Command::new("run").about("read all feeds and dump it").arg(
+                arg!(
+                    -c --config <FILE> "Sets a custom config file"
+                )
+                .id("config")
+                .required(false),
+            ),
+        )
+        .get_matches();
+
+    match matches.subcommand() {
+        Some(("run", run_matches)) => {
+            let default_config = CONFIG_FILE.to_string();
+            let config_path = run_matches
+                .get_one::<String>("config")
+                .unwrap_or(&default_config);
+            return reader(config_path).await;
+        }
+        _ => Err("No valid command".into()),
+    }
 }
