@@ -31,26 +31,29 @@ fn read_config(config: &String) -> std::io::Result<Vec<FeedDetails>> {
     Ok(urls)
 }
 
-async fn process_url(url: &FeedDetails) -> Option<(String, String)> {
+async fn process_url(url: &FeedDetails, days: i64) -> Option<(String, String)> {
     let response = match url.kind.as_str() {
         "atom" => {
             let feed = atom::Atom::new(url.url.to_string());
             let data = feed.parse_feed().await.ok()?;
-            Some((url.category.clone(), data.as_markdown(200).unwrap()))
+            data.as_markdown(days)
         }
 
         "feed" => {
             let feed = feed::Feed::new(url.url.to_string());
             let data = feed.parse_feed().await.ok()?;
-            Some((url.category.clone(), data.as_markdown(200).unwrap()))
+            data.as_markdown(days)
         }
-
         _ => None,
     };
-    response
+
+    match response {
+        Some(data) => Some((url.category.clone(), data)),
+        None => None,
+    }
 }
 
-async fn reader(config: &String) -> Result<(), Box<dyn std::error::Error>> {
+async fn reader(config: &String, days: i64) -> Result<(), Box<dyn std::error::Error>> {
     let urls = read_config(config)?;
     let sem = Arc::new(Semaphore::new(10));
     let mut res = Vec::new();
@@ -61,7 +64,7 @@ async fn reader(config: &String) -> Result<(), Box<dyn std::error::Error>> {
         let handle = task::spawn(async move {
             let _permit = permit;
 
-            if let Some((cat, response)) = process_url(&url).await {
+            if let Some((cat, response)) = process_url(&url, days).await {
                 feeds_clone.lock().unwrap().push((cat, response));
             }
         });
@@ -84,13 +87,22 @@ async fn reader(config: &String) -> Result<(), Box<dyn std::error::Error>> {
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let matches = command!()
         .subcommand(
-            Command::new("run").about("read all feeds and dump it").arg(
-                arg!(
-                    -c --config <FILE> "Sets a custom config file"
+            Command::new("run")
+                .about("read all feeds and dump it")
+                .arg(
+                    arg!(
+                        -c --config <FILE> "Sets a custom config file"
+                    )
+                    .id("config")
+                    .required(false),
                 )
-                .id("config")
-                .required(false),
-            ),
+                .arg(
+                    arg!(
+                        -d --days <number> "the number of days to check"
+                    )
+                    .id("days")
+                    .required(false),
+                ),
         )
         .subcommand(
             Command::new("check")
@@ -114,11 +126,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match matches.subcommand() {
         Some(("run", run_matches)) => {
+            let days: Option<i64> = run_matches
+                .get_one::<String>("days")
+                .map(|s| s.parse())
+                .transpose()?;
             let default_config = CONFIG_FILE.to_string();
             let config_path = run_matches
                 .get_one::<String>("config")
                 .unwrap_or(&default_config);
-            return reader(config_path).await;
+            return reader(config_path, days.unwrap_or(1)).await;
         }
 
         Some(("check", check_matches)) => {
