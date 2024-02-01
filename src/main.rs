@@ -2,11 +2,14 @@ mod atom;
 mod feed;
 mod summary;
 
+use chrono::Local;
 use clap::{arg, command, Command};
 use serde_derive::Deserialize;
 use serde_json;
+use std::fs;
 use std::fs::File;
 use std::io::Read;
+use std::io::Write;
 use std::sync::Arc;
 use std::sync::Mutex;
 use tokio::sync::Semaphore;
@@ -53,7 +56,11 @@ async fn process_url(url: &FeedDetails, days: i64) -> Option<(String, String)> {
     }
 }
 
-async fn reader(config: &String, days: i64) -> Result<(), Box<dyn std::error::Error>> {
+async fn reader(
+    config: &String,
+    days: i64,
+    output: &String,
+) -> Result<(), Box<dyn std::error::Error>> {
     let urls = read_config(config)?;
     let sem = Arc::new(Semaphore::new(10));
     let mut res = Vec::new();
@@ -76,8 +83,18 @@ async fn reader(config: &String, days: i64) -> Result<(), Box<dyn std::error::Er
     }
 
     feeds.lock().unwrap().sort_by(|a, b| a.0.cmp(&b.0));
+
+    if feeds.lock().unwrap().is_empty() {
+        println!("No feeds today, bye!");
+        return Ok(());
+    }
+
+    let current_date = Local::now().format("%Y-%m-%d").to_string();
+    let file_name = format!("{}/output_{}.txt", output, current_date);
+    let mut file = File::create(&file_name)?;
+    file.write_all(format!("# Entries for {}", current_date).as_bytes())?;
     for feed in feeds.lock().unwrap().iter() {
-        println!("{}", feed.1);
+        file.write_all(feed.1.as_bytes())?;
     }
 
     Ok(())
@@ -94,6 +111,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         -c --config <FILE> "Sets a custom config file"
                     )
                     .id("config")
+                    .required(false),
+                )
+                .arg(
+                    arg!(
+                        -o --output <dir> "output dir"
+                    )
+                    .id("output")
                     .required(false),
                 )
                 .arg(
@@ -130,11 +154,18 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .get_one::<String>("days")
                 .map(|s| s.parse())
                 .transpose()?;
+
             let default_config = CONFIG_FILE.to_string();
+            let default_output = "output".to_string();
+
+            let output_dir = run_matches
+                .get_one::<String>("output")
+                .unwrap_or(&default_output);
+            fs::create_dir_all(output_dir)?;
             let config_path = run_matches
                 .get_one::<String>("config")
                 .unwrap_or(&default_config);
-            return reader(config_path, days.unwrap_or(1)).await;
+            return reader(config_path, days.unwrap_or(1), output_dir).await;
         }
 
         Some(("check", check_matches)) => {
