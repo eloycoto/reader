@@ -4,6 +4,8 @@ mod summary;
 
 use chrono::Local;
 use clap::{arg, command, Command};
+use env_logger;
+use log::info;
 use serde_derive::Deserialize;
 use serde_json;
 use std::fs;
@@ -41,7 +43,6 @@ async fn process_url(url: &FeedDetails, days: i64) -> Option<(String, String)> {
             let data = feed.parse_feed().await.ok()?;
             data.as_markdown(days)
         }
-
         "feed" => {
             let feed = feed::Feed::new(url.url.to_string());
             let data = feed.parse_feed().await.ok()?;
@@ -49,10 +50,12 @@ async fn process_url(url: &FeedDetails, days: i64) -> Option<(String, String)> {
         }
         _ => None,
     };
-
     match response {
         Some(data) => Some((url.category.clone(), data)),
-        None => None,
+        None => {
+            info!("Feed with url '{}' has no new entries", url.url.to_string());
+            None
+        }
     }
 }
 
@@ -90,7 +93,7 @@ async fn reader(
     }
 
     let current_date = Local::now().format("%Y-%m-%d").to_string();
-    let file_name = format!("{}/output_{}.txt", output, current_date);
+    let file_name = format!("{}/output_{}.md", output, current_date);
     let mut file = File::create(&file_name)?;
     file.write_all(format!("# Entries for {}", current_date).as_bytes())?;
     for feed in feeds.lock().unwrap().iter() {
@@ -102,6 +105,7 @@ async fn reader(
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    env_logger::init();
     let matches = command!()
         .subcommand(
             Command::new("run")

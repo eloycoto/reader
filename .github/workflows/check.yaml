@@ -1,0 +1,52 @@
+name: Check
+
+on:
+  schedule:
+    - cron: '0 8 * * 1-5'
+  push:
+    branches:
+      - Actions
+      - main
+
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Cache Rust dependencies
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.cargo
+        key: ${{ runner.os }}-rust-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-rust-
+
+    - name: Set up Rust
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+
+    - name: Run cargo command
+      run: |
+        export RUST_LOG=info
+        mkdir -p output
+        cargo run run
+        ls -lah
+        ls -lah output
+
+    - name: Commit changes
+      run: |
+        git config --global user.name 'GitHub Actions'
+        git config --global user.email 'actions@acalustra.com'
+        git add output/*.md
+        git commit -m "Daily build at $(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}

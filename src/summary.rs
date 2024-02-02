@@ -1,4 +1,5 @@
 use chrono::{DateTime, Duration, Utc};
+use log::info;
 
 #[derive(Debug, Clone)]
 pub struct Article {
@@ -34,18 +35,23 @@ impl Summary {
     }
 
     pub fn as_markdown(&self, days: i64) -> Option<String> {
-        let since = Utc::now() - Duration::days(days) - Duration::hours(1);
+        let since = Utc::now() - Duration::days(days) - Duration::hours(2);
         let items = self
             .items
             .iter()
             .filter(|item| item.pub_date > since)
-            .map(|item| format!("    - [{}]({})", item.title, item.link))
+            .map(|item| format!("- [{}]({})", item.title, item.link))
             .collect::<Vec<String>>();
 
         if items.is_empty() {
             return None;
         }
-
+        info!(
+            "Blog '{}' has {} total entries, and {} new",
+            self.link,
+            self.items.len(),
+            items.len()
+        );
         return Some(format!(
             "\n## {} \nBlog: {} \n\n{}",
             self.title,

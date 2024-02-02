@@ -263,5 +263,10 @@
     "kind": "feed",
     "url": "https://blog.cloudflare.com/rss",
     "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://apollolabsblog.hashnode.dev/rss.xml",
+    "category": "rust"
   }
 ]
