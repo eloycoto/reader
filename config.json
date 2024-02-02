@@ -1,27 +1,267 @@
 [
-    {
-            "kind": "atom",
-            "url": "https://go.dev/blog/feed.atom",
-            "category": "golang"
-    },
-
-    {
-            "kind": "atom",
-            "url": "https://blog.rust-lang.org/feed.xml",
-            "category": "rust"
-    },
-
-
-    {
-            "kind": "feed",
-            "url": "https://blogs.gnome.org/uraeus/feed/",
-            "category": "linux"
-    },
-
-    {
-            "kind": "feed",
-            "url": "https://words.filippo.io/rss/",
-            "category": "golang"
-    }
+  {
+    "kind": "atom",
+    "url": "https://go.dev/blog/feed.atom",
+    "category": "golang"
+  },
+  {
+    "kind": "atom",
+    "url": "https://blog.rust-lang.org/feed.xml",
+    "category": "rust"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blogs.gnome.org/uraeus/feed/",
+    "category": "linux"
+  },
+  {
+    "kind": "feed",
+    "url": "https://words.filippo.io/rss/",
+    "category": "golang"
+  },
+  {
+    "kind": "feed",
+    "url": " https://bmcgee.ie/posts/index.xml",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://tinkering.xyz/rss.xml",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://mtlynch.io/index.xml ",
+    "category": "nix"
+  },
+  {
+    "kind": "atom",
+    "url": " https://daniel.feldroy.com/feeds/atom.xml",
+    "category": "nix"
+  },
+  {
+    "kind": "atom",
+    "url": "https://jvns.ca/atom.xml",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://apenwarr.ca/log/rss.php",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://tembo.io/blog/rss.xml",
+    "category": "database"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.craigkerstiens.com/index.xml",
+    "category": "database"
+  },
+  {
+    "kind": "atom",
+    "url": "https://simonwillison.net/atom/everything/",
+    "category": "ia"
+  },
+  {
+    "kind": "atom",
+    "url": "https://oxide.computer/blog/feed",
+    "category": "hardware"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.technologyreview.com/feed/",
+    "category": "tech"
+  },
+  {
+    "kind": "feed",
+    "url": "http://feeds.feedburner.com/martinkl",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://planet.igalia.com/rss20.xml",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://notes.eatonphil.com/rss.xml",
+    "category": "database"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.polarsignals.com/rss.xml",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://olegkutkov.me/feed/",
+    "category": "hardware"
+  },
+  {
+    "kind": "feed",
+    "url": "https://homehack.nl/feed/",
+    "category": "hardware"
+  },
+  {
+    "kind": "feed",
+    "url": "https://netflixtechblog.com/feed",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://github.blog/category/engineering/feed/",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://distributed-computing-musings.com/feed/",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://medium.com/feed/bbc-product-technology",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://engineering.fb.com/feed/",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.mozilla.org/en/feed/",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://infrequently.org/feed/",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://nullprogram.com/feed/",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "http://karpathy.github.io/feed.xml",
+    "category": "IA"
+  },
+  {
+    "kind": "atom",
+    "url": "https://taoofmac.com/feed",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://daniel.haxx.se/blog/feed/",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://henrikwarne.com/feed/",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.crunchydata.com/blog/rss.xml",
+    "category": "database"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.pragmaticengineer.com/rss/",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://znano.eu.org/atom.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "http://research.swtch.com/feed.atom",
+    "category": "golang"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.codinghorror.com/rss/",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://lucumr.pocoo.org/feed.atom",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://without.boats/index.xml",
+    "category": "rust"
+  },
+  {
+    "kind": "feed",
+    "url": "https://drewdevault.com/blog/index.xml",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "http://addyosmani.com/rss.xml",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://erichartford.com/rss.xml",
+    "category": "ia"
+  },
+  {
+    "kind": "atom",
+    "url": "https://martinfowler.com/feed.atom",
+    "category": "programming"
+  },
+  {
+    "kind": "atom",
+    "url": "http://blog.cleancoder.com/atom.xml",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.hillelwayne.com/post/index.xml",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "http://feeds.feedburner.com/BenNorthrop",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://benhoyt.com/writings/rss.xml",
+    "category": "programming"
+  },
+  {
+    "kind": "atom",
+    "url": "https://ferrous-systems.com/blog/feed.xml",
+    "category": "hardware"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.microsiervos.com/index.xml",
+    "category": "nix"
+  },
+  {
+    "kind": "atom",
+    "url": "https://doubleagent.net/feed.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://kentindell.github.io/feed.xml",
+    "category": "hardware"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.cloudflare.com/rss",
+    "category": "engineering"
+  }
 ]
-
