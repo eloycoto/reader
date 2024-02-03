@@ -32,9 +32,14 @@ jobs:
 
     - name: Run cargo command
       run: |
+        dayOfWeek=$(date +%u)
+        defaultDays=1
+        if [ $dayOfWeek -eq 1 ]; then
+          defaultDays=3
+        fi
         export RUST_LOG=info
         mkdir -p output
-        cargo run run
+        cargo run run --days $defaultDays
         ls -lah
         ls -lah output
 
