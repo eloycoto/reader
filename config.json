@@ -268,5 +268,15 @@
     "kind": "feed",
     "url": "https://apollolabsblog.hashnode.dev/rss.xml",
     "category": "rust"
+  },
+  {
+    "kind": "feed",
+    "url": "https://darkdot.com/index.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://architectelevator.com/feed.xml",
+    "category": "engineering"
   }
 ]
