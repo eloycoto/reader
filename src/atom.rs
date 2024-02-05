@@ -30,7 +30,7 @@ impl Atom {
             .entries()
             .iter()
             .map(|e| {
-                let link = format!("{:?}", e.links()[0].href());
+                let link = e.links()[0].href().to_string();
                 let date = e.published().unwrap_or(e.updated()).to_utc();
                 summary::Article::new(e.title().to_string(), link.to_string(), date)
             })
