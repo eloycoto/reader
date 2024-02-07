@@ -1,12 +1,13 @@
 mod atom;
+mod config;
 mod feed;
+mod get;
 mod summary;
 
 use chrono::Local;
 use clap::{arg, command, Command};
 use env_logger;
 use log::info;
-use serde_derive::Deserialize;
 use serde_json;
 use std::fs;
 use std::fs::File;
@@ -19,38 +20,20 @@ use tokio::task;
 
 static CONFIG_FILE: &str = "config.json";
 
-#[derive(Deserialize, Debug)]
-struct FeedDetails {
-    kind: String,
-    url: String,
-    category: String,
-}
-
-fn read_config(config: &String) -> std::io::Result<Vec<FeedDetails>> {
+fn read_config(config: &String) -> std::io::Result<Vec<config::FeedDetails>> {
     let mut file = File::open(config)?;
     let mut json_data = String::new();
     file.read_to_string(&mut json_data)?;
 
-    let urls: Vec<FeedDetails> = serde_json::from_str(&json_data)?;
+    let urls = serde_json::from_str(&json_data)?;
 
     Ok(urls)
 }
 
-async fn process_url(url: &FeedDetails, days: i64) -> Option<(String, String)> {
-    let response = match url.kind.as_str() {
-        "atom" => {
-            let feed = atom::Atom::new(url.url.to_string());
-            let data = feed.parse_feed().await.ok()?;
-            data.as_markdown(days)
-        }
-        "feed" => {
-            let feed = feed::Feed::new(url.url.to_string());
-            let data = feed.parse_feed().await.ok()?;
-            data.as_markdown(days)
-        }
-        _ => None,
-    };
-    match response {
+async fn process_url(url: &config::FeedDetails, days: i64) -> Option<(String, String)> {
+    let feed = get::check_feed(url.url(), url.kind()).await.ok()?;
+
+    match feed.as_markdown(days) {
         Some(data) => Some((url.category.clone(), data)),
         None => {
             info!("Feed with url '{}' has no new entries", url.url.to_string());
@@ -150,6 +133,15 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                     .required(true),
                 ),
         )
+        .subcommand(
+            Command::new("get_feed").about("get a feed from url").arg(
+                arg!(
+                    -u --url <url> "url to check"
+                )
+                .id("url")
+                .required(true),
+            ),
+        )
         .get_matches();
 
     match matches.subcommand() {
@@ -174,30 +166,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         Some(("check", check_matches)) => {
             let default_type = "atom".to_string();
-            let feed_type = check_matches
+            let feed_type_str = check_matches
                 .get_one::<String>("type")
                 .unwrap_or(&default_type);
+
+            let feed_type = match feed_type_str.as_str() {
+                "atom" => config::FeedKinds::Atom,
+                "feed" => config::FeedKinds::Feed,
+                _ => return Err("No valid feed type".into()),
+            };
 
             let url = check_matches.get_one::<String>("url");
             if url.is_none() {
                 return Err("No valid url".into());
             }
 
-            match feed_type.as_str() {
-                "atom" => {
-                    let feed = atom::Atom::new(url.unwrap().to_string());
-                    let data = feed.parse_feed().await?;
-                    println!("{:?}", data.as_markdown(1000).unwrap());
-                    Ok(())
+            let _ = get::check_feed(url.unwrap(), feed_type).await?;
+
+            let result = config::FeedDetails {
+                kind: config::FeedKinds::Atom,
+                url: url.unwrap().to_string(),
+                category: "".to_string(),
+            };
+            println!("{}", serde_json::to_string_pretty(&result)?);
+            Ok(())
+        }
+        Some(("get_feed", get_feed)) => {
+            let url = get_feed.get_one::<String>("url").unwrap();
+            let res = get::get_feeds_urls(url.to_string()).await?;
+
+            for feed_details in res.iter() {
+                match get::check_feed(feed_details.url(), feed_details.kind()).await {
+                    Ok(_) => {
+                        let result = config::FeedDetails {
+                            kind: config::FeedKinds::Atom,
+                            url: feed_details.url().to_string(),
+                            category: "".to_string(),
+                        };
+                        println!("{}", serde_json::to_string_pretty(&result)?);
+                    }
+                    Err(_) => continue,
                 }
-                "feed" => {
-                    let feed = feed::Feed::new(url.unwrap().to_string());
-                    let data = feed.parse_feed().await?;
-                    println!("{:?}", data.as_markdown(1000).unwrap());
-                    Ok(())
-                }
-                _ => Err("Invalid type".into()),
             }
+            Ok(())
         }
         _ => Err("No valid command".into()),
     }

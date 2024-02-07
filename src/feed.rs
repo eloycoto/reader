@@ -10,6 +10,7 @@ pub enum FeedError {
     StatusError,
     ReadError,
     RSSParserError,
+    InvalidKind,
 }
 
 impl std::error::Error for FeedError {}
