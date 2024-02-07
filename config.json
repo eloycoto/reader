@@ -278,5 +278,10 @@
     "kind": "atom",
     "url": "https://architectelevator.com/feed.xml",
     "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.modos.tech/rss",
+    "category": "hardware"
   }
 ]
