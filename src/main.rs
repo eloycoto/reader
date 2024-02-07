@@ -171,8 +171,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .unwrap_or(&default_type);
 
             let feed_type = match feed_type_str.as_str() {
-                "atom" => config::FeedKinds::Atom,
-                "feed" => config::FeedKinds::Feed,
+                "atom" => config::FeedKind::Atom,
+                "feed" => config::FeedKind::Feed,
                 _ => return Err("No valid feed type".into()),
             };
 
@@ -184,11 +184,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let _ = get::check_feed(url.unwrap(), feed_type).await?;
 
             let result = config::FeedDetails {
-                kind: config::FeedKinds::Atom,
+                kind: config::FeedKind::Atom,
                 url: url.unwrap().to_string(),
                 category: "".to_string(),
             };
-            println!("{}", serde_json::to_string_pretty(&result)?);
+
+            println!("{}", result.as_json()?);
             Ok(())
         }
         Some(("get_feed", get_feed)) => {
@@ -199,11 +200,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 match get::check_feed(feed_details.url(), feed_details.kind()).await {
                     Ok(_) => {
                         let result = config::FeedDetails {
-                            kind: config::FeedKinds::Atom,
+                            kind: config::FeedKind::Atom,
                             url: feed_details.url().to_string(),
                             category: "".to_string(),
                         };
-                        println!("{}", serde_json::to_string_pretty(&result)?);
+                        println!("{}", result.as_json()?);
                     }
                     Err(_) => continue,
                 }

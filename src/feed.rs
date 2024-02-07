@@ -10,7 +10,6 @@ pub enum FeedError {
     StatusError,
     ReadError,
     RSSParserError,
-    InvalidKind,
 }
 
 impl std::error::Error for FeedError {}
@@ -31,11 +30,16 @@ impl Feed {
     }
 
     pub async fn parse_feed(&self) -> Result<summary::Summary, FeedError> {
-        let response = reqwest::get(self.url.clone())
+        let response = reqwest::get(self.url.as_str())
             .await
             .map_err(|_| FeedError::ConnectionError)?;
 
         if response.status() != 200 {
+            log::error!(
+                "Cannot get url '{}' with status {}",
+                self.url,
+                response.status()
+            );
             return Err(FeedError::StatusError);
         }
 

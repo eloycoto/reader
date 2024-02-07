@@ -1,5 +1,5 @@
 use crate::atom::Atom;
-use crate::config::{FeedDetails, FeedKinds};
+use crate::config::{FeedDetails, FeedKind};
 use crate::feed::{Feed, FeedError};
 use crate::summary;
 use select::document::Document;
@@ -33,11 +33,12 @@ pub async fn get_feeds_urls(url: String) -> Result<Vec<FeedDetails>, GetErrors> 
         return Err(GetErrors::InvalidURL);
     }
 
-    let response = reqwest::get(url)
+    let response = reqwest::get(url.as_str())
         .await
         .map_err(|e| GetErrors::ReqwestError(e))?;
 
     if response.status() != 200 {
+        log::error!("Cannot get url '{}' with status {}", url, response.status());
         return Err(GetErrors::StatusError);
     }
 
@@ -55,8 +56,8 @@ pub async fn get_feeds_urls(url: String) -> Result<Vec<FeedDetails>, GetErrors> 
     {
         let node_type = node.attr("type").unwrap();
         let kind = match node_type {
-            "application/rss+xml" => FeedKinds::Feed,
-            "application/atom+xml" => FeedKinds::Atom,
+            "application/rss+xml" => FeedKind::Feed,
+            "application/atom+xml" => FeedKind::Atom,
             _ => continue,
         };
 
@@ -75,14 +76,14 @@ pub async fn get_feeds_urls(url: String) -> Result<Vec<FeedDetails>, GetErrors> 
     return Ok(result);
 }
 
-pub async fn check_feed(url: &str, kind: FeedKinds) -> Result<summary::Summary, FeedError> {
+pub async fn check_feed(url: &str, kind: FeedKind) -> Result<summary::Summary, FeedError> {
     match kind {
-        FeedKinds::Atom => {
+        FeedKind::Atom => {
             let feed = Atom::new(url.to_string());
             let data = feed.parse_feed().await?;
             Ok(data)
         }
-        FeedKinds::Feed => {
+        FeedKind::Feed => {
             let feed = Feed::new(url.to_string());
             let data = feed.parse_feed().await?;
             Ok(data)
