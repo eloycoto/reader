@@ -283,5 +283,30 @@
     "kind": "feed",
     "url": "https://www.modos.tech/rss",
     "category": "hardware"
+  },
+  {
+    "kind": "atom",
+    "url": "https://andrea.corbellini.name/feed.atom",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://franiglesias.github.io/feed.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://notes.eatonphil.com/rss.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://justine.lol/rss.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://lemire.me/blog/feed/",
+    "category": "engineering"
   }
 ]

@@ -26,6 +26,6 @@ impl FeedDetails {
     }
 
     pub fn as_json(&self) -> Result<String, serde_json::Error> {
-        serde_json::to_string(self)
+        serde_json::to_string_pretty(self)
     }
 }

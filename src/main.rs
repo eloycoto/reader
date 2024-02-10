@@ -184,7 +184,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let _ = get::check_feed(url.unwrap(), feed_type).await?;
 
             let result = config::FeedDetails {
-                kind: config::FeedKind::Atom,
+                kind: feed_type,
                 url: url.unwrap().to_string(),
                 category: "".to_string(),
             };
