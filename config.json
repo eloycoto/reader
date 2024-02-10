@@ -308,5 +308,20 @@
     "kind": "feed",
     "url": "https://lemire.me/blog/feed/",
     "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://zserge.com/rss.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://lemire.me/blog/feed/",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.rust-embedded.org/rss.xml",
+    "category": "embedded"
   }
 ]
