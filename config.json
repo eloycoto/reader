@@ -323,5 +323,10 @@
     "kind": "feed",
     "url": "https://blog.rust-embedded.org/rss.xml",
     "category": "embedded"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.cryptographyengineering.com/feed/",
+    "category": "security"
   }
 ]
