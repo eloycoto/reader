@@ -328,5 +328,10 @@
     "kind": "feed",
     "url": "https://blog.cryptographyengineering.com/feed/",
     "category": "security"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.thalheim.io/index.xml",
+    "category": "nix"
   }
 ]
