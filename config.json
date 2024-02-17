@@ -333,5 +333,25 @@
     "kind": "feed",
     "url": "https://blog.thalheim.io/index.xml",
     "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://jeancharles.quillet.org/rss.xml",
+    "category": "nix"
+  },
+  {
+    "kind": "feed",
+    "url": "https://tldraw.substack.com/feed",
+    "category": "product"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.excalidraw.com/rss.xml",
+    "category": "product"
+  },
+  {
+    "kind": "atom",
+    "url": "https://neovim.io/news.xml",
+    "category": "product"
   }
 ]
