@@ -353,5 +353,10 @@
     "kind": "atom",
     "url": "https://neovim.io/news.xml",
     "category": "product"
+  },
+  {
+    "kind": "feed",
+    "url": "https://xeiaso.net/blog.rss",
+    "category": "engineering"
   }
 ]
