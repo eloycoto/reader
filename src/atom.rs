@@ -1,3 +1,4 @@
+use crate::feed::get_url_content;
 use crate::feed::FeedError;
 use crate::summary;
 use atom_syndication::Feed;
@@ -12,19 +13,8 @@ impl Atom {
     }
 
     pub async fn parse_feed<'a>(&'a self) -> Result<summary::Summary, FeedError> {
-        let response = reqwest::get(self.url.as_str())
-            .await
-            .map_err(|_| FeedError::ConnectionError)?;
-        if response.status() != 200 {
-            log::error!(
-                "Cannot get url '{}' with status {}",
-                self.url,
-                response.status()
-            );
-            return Err(FeedError::StatusError);
-        }
+        let content = get_url_content(&self.url).await?;
 
-        let content = response.bytes().await.map_err(|_| FeedError::ReadError)?;
         let feed = Feed::read_from(&content[..]).map_err(|_| FeedError::RSSParserError)?;
 
         Ok(self.export_summary(feed))

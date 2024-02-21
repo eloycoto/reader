@@ -89,7 +89,7 @@ async fn reader(
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     env_logger::init();
-    let matches = command!()
+    let mut command = command!()
         .subcommand(
             Command::new("run")
                 .about("read all feeds and dump it")
@@ -141,8 +141,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 .id("url")
                 .required(true),
             ),
-        )
-        .get_matches();
+        );
+
+    let matches = command.clone().get_matches();
 
     match matches.subcommand() {
         Some(("run", run_matches)) => {
@@ -211,6 +212,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             Ok(())
         }
-        _ => Err("No valid command".into()),
+        _ => {
+            command.print_help()?;
+            Err("Invalid command".into())
+        }
     }
 }

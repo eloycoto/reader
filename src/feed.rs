@@ -1,8 +1,11 @@
+use bytes::Bytes;
 use chrono::DateTime;
 use rss::Channel;
 use std::fmt;
 
 use crate::summary;
+
+const MAX_ERR_CONTENT_LEN: usize = 30;
 
 #[derive(Debug)]
 pub enum FeedError {
@@ -20,6 +23,32 @@ impl fmt::Display for FeedError {
     }
 }
 
+pub async fn get_url_content(url: &str) -> Result<Bytes, FeedError> {
+    let response = reqwest::get(url)
+        .await
+        .map_err(|_| FeedError::ConnectionError)?;
+    let status_code = response.status();
+    let headers = response.headers().clone();
+
+    let content = response.bytes().await.map_err(|_| FeedError::ReadError)?;
+    if status_code != 200 {
+        let mut content_len = content.len();
+        if content_len > MAX_ERR_CONTENT_LEN {
+            content_len = MAX_ERR_CONTENT_LEN;
+        }
+
+        log::error!(
+            "Cannot get url '{}' with status '{}' Content='{:?}' headers='{:?}'",
+            url,
+            status_code,
+            content.slice(1..content_len),
+            headers
+        );
+        return Err(FeedError::StatusError);
+    }
+    Ok(content)
+}
+
 pub struct Feed {
     url: String,
 }
@@ -30,20 +59,8 @@ impl Feed {
     }
 
     pub async fn parse_feed(&self) -> Result<summary::Summary, FeedError> {
-        let response = reqwest::get(self.url.as_str())
-            .await
-            .map_err(|_| FeedError::ConnectionError)?;
+        let content = get_url_content(&self.url).await?;
 
-        if response.status() != 200 {
-            log::error!(
-                "Cannot get url '{}' with status {}",
-                self.url,
-                response.status()
-            );
-            return Err(FeedError::StatusError);
-        }
-
-        let content = response.bytes().await.map_err(|_| FeedError::ReadError)?;
         let channel = Channel::read_from(&content[..]).map_err(|_| FeedError::RSSParserError)?;
         Ok(self.export_summary(channel))
     }
