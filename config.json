@@ -358,5 +358,20 @@
     "kind": "feed",
     "url": "https://xeiaso.net/blog.rss",
     "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://www.petermcconnell.com/index.xml",
+    "category": "programming"
+  },
+  {
+    "kind": "atom",
+    "url": "https://arighi.blogspot.com/feeds/posts/default",
+    "category": "programming"
+  },
+  {
+    "kind": "atom",
+    "url": "https://miguelcarranza.es/feed.xml",
+    "category": "leadership"
   }
 ]
