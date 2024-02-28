@@ -65,7 +65,13 @@ async fn reader(
     }
 
     for result in res {
-        result.await.unwrap();
+        match result.await {
+            Ok(_) => continue,
+            Err(err) => {
+                log::error!("Task failed: {:?}", err);
+                continue;
+            }
+        }
     }
 
     feeds.lock().unwrap().sort_by(|a, b| a.0.cmp(&b.0));
