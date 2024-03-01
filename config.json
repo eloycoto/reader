@@ -62,7 +62,7 @@
   {
     "kind": "atom",
     "url": "https://simonwillison.net/atom/everything/",
-    "category": "ia"
+    "category": "IA"
   },
   {
     "kind": "atom",
@@ -373,5 +373,10 @@
     "kind": "atom",
     "url": "https://miguelcarranza.es/feed.xml",
     "category": "leadership"
+  },
+  {
+    "kind": "feed",
+    "url": "https://vickiboykis.com/index.xml",
+    "category": "IA"
   }
 ]
