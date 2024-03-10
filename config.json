@@ -378,5 +378,15 @@
     "kind": "feed",
     "url": "https://vickiboykis.com/index.xml",
     "category": "IA"
+  },
+  {
+    "kind": "atom",
+    "url": "https://mattsills.github.io/atom.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://redixhumayun.github.io/feed.xml",
+    "category": "engineering"
   }
 ]
