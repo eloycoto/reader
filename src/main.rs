@@ -4,7 +4,7 @@ mod feed;
 mod get;
 mod summary;
 
-use chrono::Local;
+use chrono::{DateTime, Local, Utc};
 use clap::{arg, command, Command};
 use env_logger;
 use log::info;
@@ -30,10 +30,10 @@ fn read_config(config: &String) -> std::io::Result<Vec<config::FeedDetails>> {
     Ok(urls)
 }
 
-async fn process_url(url: &config::FeedDetails, days: i64) -> Option<(String, String)> {
+async fn process_url(url: &config::FeedDetails, since: DateTime<Utc>) -> Option<(String, String)> {
     let feed = get::check_feed(url.url(), url.kind()).await.ok()?;
 
-    match feed.as_markdown(days) {
+    match feed.as_markdown(since) {
         Some(data) => Some((url.category.clone(), data)),
         None => {
             info!("Feed with url '{}' has no new entries", url.url.to_string());
@@ -43,21 +43,23 @@ async fn process_url(url: &config::FeedDetails, days: i64) -> Option<(String, St
 }
 
 async fn reader(
-    config: &String,
+    cfg: &String,
     days: i64,
     output: &String,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    let urls = read_config(config)?;
+    let urls = read_config(cfg)?;
     let sem = Arc::new(Semaphore::new(10));
     let mut res = Vec::new();
     let feeds = Arc::new(Mutex::new(Vec::new()));
+    let since = config::get_since(days);
+    info!("Checking feed published after: '{:?}'", since);
     for url in urls {
         let permit = Arc::clone(&sem).acquire_owned().await;
         let feeds_clone = Arc::clone(&feeds);
         let handle = task::spawn(async move {
             let _permit = permit;
 
-            if let Some((cat, response)) = process_url(&url, days).await {
+            if let Some((cat, response)) = process_url(&url, since).await {
                 feeds_clone.lock().unwrap().push((cat, response));
             }
         });
@@ -204,6 +206,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let res = get::get_feeds_urls(url.to_string()).await?;
 
             for feed_details in res.iter() {
+                println!("URL-->{} {:?}", feed_details.url(), feed_details.kind());
                 match get::check_feed(feed_details.url(), feed_details.kind()).await {
                     Ok(_) => {
                         let result = config::FeedDetails {

@@ -1,3 +1,4 @@
+use chrono::{DateTime, Duration, Timelike, Utc};
 use serde_derive::Deserialize;
 use serde_derive::Serialize;
 use serde_json;
@@ -28,4 +29,8 @@ impl FeedDetails {
     pub fn as_json(&self) -> Result<String, serde_json::Error> {
         serde_json::to_string_pretty(self)
     }
+}
+
+pub fn get_since(days: i64) -> DateTime<Utc> {
+    Utc::now().with_hour(0).unwrap() - Duration::days(days) - Duration::hours(2)
 }

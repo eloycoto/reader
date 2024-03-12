@@ -1,4 +1,4 @@
-use chrono::{DateTime, Duration, Utc};
+use chrono::{DateTime, Utc};
 use log::info;
 
 #[derive(Debug, Clone)]
@@ -34,12 +34,11 @@ impl Summary {
         }
     }
 
-    pub fn as_markdown(&self, days: i64) -> Option<String> {
-        let since = Utc::now() - Duration::days(days) - Duration::hours(2);
+    pub fn as_markdown(&self, since: DateTime<Utc>) -> Option<String> {
         let items = self
             .items
             .iter()
-            .filter(|item| item.pub_date > since)
+            .filter(|item| item.pub_date >= since)
             .map(|item| format!("- [{}]({})", item.title, item.link))
             .collect::<Vec<String>>();
 
