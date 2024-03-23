@@ -388,5 +388,15 @@
     "kind": "atom",
     "url": "https://redixhumayun.github.io/feed.xml",
     "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://dadrian.io/blog/index.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://danielmangum.com/index.xml",
+    "category": "engineering"
   }
 ]
