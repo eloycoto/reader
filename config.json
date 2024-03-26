@@ -398,5 +398,15 @@
     "kind": "feed",
     "url": "https://danielmangum.com/index.xml",
     "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://otmaneboughaba.com/feed.xml",
+    "category": "ia"
+  },
+  {
+    "kind": "feed",
+    "url": "https://choly.ca/index.xml",
+    "category": "engineering"
   }
 ]
