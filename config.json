@@ -408,5 +408,10 @@
     "kind": "feed",
     "url": "https://choly.ca/index.xml",
     "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://josephthacker.com/feed.xml",
+    "category": "ia"
   }
 ]
