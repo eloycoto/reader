@@ -210,7 +210,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 match get::check_feed(feed_details.url(), feed_details.kind()).await {
                     Ok(_) => {
                         let result = config::FeedDetails {
-                            kind: config::FeedKind::Atom,
+                            kind: feed_details.kind(),
                             url: feed_details.url().to_string(),
                             category: "".to_string(),
                         };

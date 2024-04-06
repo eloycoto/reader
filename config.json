@@ -413,5 +413,10 @@
     "kind": "atom",
     "url": "https://josephthacker.com/feed.xml",
     "category": "ia"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.steampunkai.com/rss/",
+    "category": "ia"
   }
 ]
