@@ -86,11 +86,6 @@
   },
   {
     "kind": "feed",
-    "url": "https://notes.eatonphil.com/rss.xml",
-    "category": "database"
-  },
-  {
-    "kind": "feed",
     "url": "https://www.polarsignals.com/rss.xml",
     "category": "nix"
   },
@@ -250,8 +245,8 @@
     "category": "nix"
   },
   {
-    "kind": "atom",
-    "url": "https://doubleagent.net/feed.xml",
+    "kind": "feed",
+    "url": "https://doubleagent.net/rss/",
     "category": "engineering"
   },
   {
@@ -302,11 +297,6 @@
   {
     "kind": "atom",
     "url": "https://justine.lol/rss.xml",
-    "category": "engineering"
-  },
-  {
-    "kind": "feed",
-    "url": "https://lemire.me/blog/feed/",
     "category": "engineering"
   },
   {
@@ -418,5 +408,30 @@
     "kind": "feed",
     "url": "https://www.steampunkai.com/rss/",
     "category": "ia"
+  },
+  {
+    "kind": "feed",
+    "url": "https://irreal.org/blog/?feed=rss2",
+    "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://arslan.io/rss/",
+    "category": "programming"
+  },
+  {
+    "kind": "atom",
+    "url": "https://feed.ipspace.net/blog/",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://major.io/index.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://chris.partridge.tech/feed.xml",
+    "category": "security"
   }
 ]
