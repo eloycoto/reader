@@ -13,3 +13,6 @@ concat_and_compress:
 
 view:
 	jq -r 'group_by(.category)[] | {(.[0].category): [.[].url]}' config.json
+
+duplicates:
+	jq -r 'group_by(.url) | map(select(length > 1))' config.json
