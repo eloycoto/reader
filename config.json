@@ -433,5 +433,15 @@
     "kind": "feed",
     "url": "https://chris.partridge.tech/feed.xml",
     "category": "security"
+  },
+  {
+    "kind": "feed",
+    "url": "https://zed.dev/blog.rss",
+    "category": "rust"
+  },
+  {
+    "kind": "feed",
+    "url": "https://antonz.org/index.xml",
+    "category": "programming"
   }
 ]
