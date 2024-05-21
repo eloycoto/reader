@@ -443,5 +443,10 @@
     "kind": "feed",
     "url": "https://antonz.org/index.xml",
     "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://kreya.app/blog/rss.xml",
+    "category": "programming"
   }
 ]
