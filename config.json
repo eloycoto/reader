@@ -448,5 +448,10 @@
     "kind": "feed",
     "url": "https://kreya.app/blog/rss.xml",
     "category": "programming"
+  },
+  {
+    "kind": "atom",
+    "url": "https://brycemecum.com/feed.xml",
+    "category": "programming"
   }
 ]
