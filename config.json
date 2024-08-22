@@ -453,5 +453,15 @@
     "kind": "atom",
     "url": "https://brycemecum.com/feed.xml",
     "category": "programming"
+  },
+  {
+    "kind": "feed",
+    "url": "https://blog.burntsushi.net/index.xml",
+    "category": "rust"
+  },
+  {
+    "kind": "atom",
+    "url": "http://feeds.hbr.org/harvardbusiness",
+    "category": "tech"
   }
 ]
