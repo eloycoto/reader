@@ -463,5 +463,25 @@
     "kind": "atom",
     "url": "http://feeds.hbr.org/harvardbusiness",
     "category": "tech"
+  },
+  {
+    "kind": "feed",
+    "url": "https://nabeelqu.co/rss",
+    "category": "engineering"
+  },
+  {
+    "kind": "atom",
+    "url": "https://www.dbreunig.com/feed.xml",
+    "category": "ai"
+  },
+  {
+    "kind": "atom",
+    "url": "https://jvns.ca/til/atom.xml",
+    "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://grantslatton.com/rss.xml",
+    "category": "engineering"
   }
 ]
