@@ -483,5 +483,10 @@
     "kind": "feed",
     "url": "https://grantslatton.com/rss.xml",
     "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://javisantana.com/feed.xml",
+    "category": "engineering"
   }
 ]
