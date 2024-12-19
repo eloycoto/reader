@@ -51,11 +51,6 @@
   },
   {
     "kind": "feed",
-    "url": "https://tembo.io/blog/rss.xml",
-    "category": "database"
-  },
-  {
-    "kind": "feed",
     "url": "https://www.craigkerstiens.com/index.xml",
     "category": "database"
   },
@@ -488,5 +483,15 @@
     "kind": "feed",
     "url": "https://javisantana.com/feed.xml",
     "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://embracethered.com/blog/index.xml",
+    "category": "ai"
+  },
+  {
+    "kind": "atom",
+    "url": "https://eli.thegreenplace.net/feeds/all.atom.xml",
+    "category": "math"
   }
 ]
