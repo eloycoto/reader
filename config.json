@@ -493,5 +493,10 @@
     "kind": "atom",
     "url": "https://eli.thegreenplace.net/feeds/all.atom.xml",
     "category": "math"
+  },
+  {
+    "kind": "feed",
+    "url": "https://matt.blwt.io/post/index.xml",
+    "category": "engineering"
   }
 ]
