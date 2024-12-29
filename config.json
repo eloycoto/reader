@@ -498,5 +498,10 @@
     "kind": "feed",
     "url": "https://matt.blwt.io/post/index.xml",
     "category": "engineering"
+  },
+  {
+    "kind": "feed",
+    "url": "https://cafkafk.dev/index.xml",
+    "category": "rust"
   }
 ]
