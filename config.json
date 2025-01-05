@@ -503,5 +503,10 @@
     "kind": "feed",
     "url": "https://cafkafk.dev/index.xml",
     "category": "rust"
+  },
+  {
+    "kind": "feed",
+    "url": "https://domwil.co.uk/index.xml",
+    "category": "hardware"
   }
 ]
