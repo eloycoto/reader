@@ -508,5 +508,10 @@
     "kind": "feed",
     "url": "https://domwil.co.uk/index.xml",
     "category": "hardware"
+  },
+  {
+    "kind": "feed",
+    "url": "https://tomasmcguinness.com/feed/",
+    "category": "iot"
   }
 ]
