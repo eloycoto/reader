@@ -455,11 +455,6 @@
     "category": "rust"
   },
   {
-    "kind": "atom",
-    "url": "http://feeds.hbr.org/harvardbusiness",
-    "category": "tech"
-  },
-  {
     "kind": "feed",
     "url": "https://nabeelqu.co/rss",
     "category": "engineering"
@@ -518,5 +513,10 @@
     "kind": "feed",
     "url": "https://chauquest.com/index.php/feed/",
     "category": "iot"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.sintetia.com/feed/",
+    "category": "economics"
   }
 ]
