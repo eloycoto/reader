@@ -513,5 +513,10 @@
     "kind": "feed",
     "url": "https://tomasmcguinness.com/feed/",
     "category": "iot"
+  },
+  {
+    "kind": "feed",
+    "url": "https://chauquest.com/index.php/feed/",
+    "category": "iot"
   }
 ]
