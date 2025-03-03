@@ -518,5 +518,10 @@
     "kind": "feed",
     "url": "https://www.sintetia.com/feed/",
     "category": "economics"
+  },
+  {
+    "kind": "feed",
+    "url": "https://ghuntley.com/rss/",
+    "category": "tech"
   }
 ]
