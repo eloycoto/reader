@@ -523,5 +523,10 @@
     "kind": "feed",
     "url": "https://ghuntley.com/rss/",
     "category": "tech"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.allthingsdistributed.com/atom.xml",
+    "category": "tech"
   }
 ]
