@@ -528,5 +528,15 @@
     "kind": "feed",
     "url": "https://www.allthingsdistributed.com/atom.xml",
     "category": "tech"
+  },
+  {
+    "kind": "feed",
+    "url": "https://www.morling.dev/blog/index.xml",
+    "category": "tech"
+  },
+  {
+    "kind": "atom",
+    "url": "https://joe-antognini.github.io/feed.xml",
+    "category": "tech"
   }
 ]
