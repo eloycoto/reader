@@ -543,5 +543,10 @@
     "kind": "feed",
     "url": "https://endler.dev/rss.xml",
     "category": "tech"
+  },
+  {
+    "kind": "feed",
+    "url": "https://corrode.dev/rss.xml",
+    "category": "rust"
   }
 ]
