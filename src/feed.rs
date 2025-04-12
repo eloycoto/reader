@@ -70,13 +70,17 @@ impl Feed {
             .items
             .iter()
             .map(|e| {
-                let date = DateTime::parse_from_rfc2822(e.pub_date().unwrap())
-                    .unwrap()
-                    .to_utc();
+                let pub_date = e.pub_date().unwrap();
+                let date = DateTime::parse_from_rfc2822(pub_date)
+                    .or_else(|_| {
+                        // some webs does not follow the spec.
+                        DateTime::parse_from_rfc3339(pub_date)
+                    })
+                    .unwrap();
                 summary::Article::new(
                     e.title().unwrap_or("Invalid").to_string(),
                     e.link().unwrap_or("Invalid").to_string(),
-                    date,
+                    date.to_utc(),
                 )
             })
             .collect();
