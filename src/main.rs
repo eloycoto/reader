@@ -7,7 +7,7 @@ mod summary;
 use chrono::{DateTime, Local, Utc};
 use clap::{arg, command, Command};
 use env_logger;
-use log::info;
+use log::{debug, info};
 use serde_json;
 use std::fs;
 use std::fs::File;
@@ -53,6 +53,7 @@ async fn reader(
     let feeds = Arc::new(Mutex::new(Vec::new()));
     let since = config::get_since(days);
     info!("Checking feed published after: '{:?}'", since);
+    let task_urls: Vec<String> = urls.iter().map(|url| url.url().to_string()).collect();
     for url in urls {
         let permit = Arc::clone(&sem).acquire_owned().await;
         let feeds_clone = Arc::clone(&feeds);
@@ -65,11 +66,25 @@ async fn reader(
         });
         res.push(handle);
     }
-
-    for result in res {
+    let mut completed = 0;
+    let mut failed = 0;
+    let mut total = res.len();
+    for (i, result) in res.iter_mut().enumerate() {
         match result.await {
-            Ok(_) => continue,
+            Ok(_) => {
+                completed += 1;
+                debug!(
+                    "Task {}/{} completed. Total completed={} failed={} url={}",
+                    i + 1,
+                    total,
+                    completed,
+                    failed,
+                    task_urls[i]
+                );
+                continue;
+            }
             Err(err) => {
+                failed += 1;
                 log::error!("Task failed: {:?}", err);
                 continue;
             }
