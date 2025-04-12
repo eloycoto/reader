@@ -24,7 +24,14 @@ impl fmt::Display for FeedError {
 }
 
 pub async fn get_url_content(url: &str) -> Result<Bytes, FeedError> {
-    let response = reqwest::get(url)
+    let client = reqwest::Client::builder()
+        .timeout(std::time::Duration::from_secs(60))
+        .build()
+        .map_err(|_| FeedError::ConnectionError)?;
+
+    let response = client
+        .get(url)
+        .send()
         .await
         .map_err(|_| FeedError::ConnectionError)?;
     let status_code = response.status();
