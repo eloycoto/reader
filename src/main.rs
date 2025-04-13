@@ -68,7 +68,7 @@ async fn reader(
     }
     let mut completed = 0;
     let mut failed = 0;
-    let mut total = res.len();
+    let total = res.len();
     for (i, result) in res.iter_mut().enumerate() {
         match result.await {
             Ok(_) => {
